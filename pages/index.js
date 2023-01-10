@@ -1,16 +1,40 @@
+import { useState } from 'react';
+import Button from 'react-bootstrap';
+import JokeTeller from '../components/JokeTeller';
+import getJoke from '../api/jokeData';
+
 function Home() {
+  const [btnText, setBtnText] = useState('Get A Joke');
+  const [joke, setJoke] = useState({});
+
+  const setButton = (text) => {
+    setBtnText(text);
+  };
+
+  const getAJoke = () => {
+    getJoke().then((obj) => {
+      setJoke({
+        setup: obj.setup,
+        delivery: obj.delivery,
+      });
+
+      setButton('Get Punchline');
+    });
+  };
+
   return (
-    <div
-      className="text-center d-flex flex-column justify-content-center align-content-center"
-      style={{
-        height: '90vh',
-        padding: '30px',
-        maxWidth: '400px',
-        margin: '0 auto',
-      }}
-    >
-      <h1>Welcome Home!</h1>
-    </div>
+    <>
+      <JokeTeller joke={joke} btnText={btnText} />
+      {btnText === 'Get A Joke' || btnText === 'Get A New Joke' ? (
+        <Button type="button" onClick={getAJoke}>
+          {btnText}
+        </Button>
+      ) : (
+        <Button type="button" onClick={() => setButton('Get A New Joke')}>
+          {btnText}
+        </Button>
+      )}
+    </>
   );
 }
 
